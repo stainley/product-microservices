@@ -50,6 +50,12 @@ pipeline {
                     when {
                         branch 'development'
                     }
+
+                    stage ('deploy to develop') {
+                        steps {
+                            sh 'echo DEPLOY TO DEV'
+                        }
+                    }
                 }
 
                 // Feature
