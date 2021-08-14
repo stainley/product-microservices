@@ -81,7 +81,9 @@ pipeline {
 
                     stages {
                         stage('build') {
-                            sh 'docker-compose build .'
+                            steps {
+                                sh 'docker-compose build .'
+                            }
                         }
                     }
                     steps ('deploy to production') {
