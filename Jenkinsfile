@@ -68,6 +68,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Build') {
+            steps {
+                sh 'mvn package'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                }
+            }
+        }
         stage('Cleaning') {
             steps {
                 sh 'mvn -U clean'
