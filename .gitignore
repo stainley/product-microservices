@@ -107,3 +107,7 @@ review/target
 product-composite/target
 product-composite/.mvn
 product-composite/product-composite.iml
+
+mvnw.cmd
+mvnw
+*.iml
