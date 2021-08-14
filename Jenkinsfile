@@ -51,9 +51,11 @@ pipeline {
                         branch 'development'
                     }
 
-                    stage ('deploy to develop') {
-                        steps {
-                            sh 'echo DEPLOY TO DEV'
+                    stages {
+                        stage ('deploy to develop') {
+                            steps {
+                                sh 'echo DEPLOY TO DEV'
+                            }
                         }
                     }
                 }
