@@ -24,7 +24,7 @@ pipeline {
             parallel {
                 stage ('Unit Test') {
                     steps {
-                        sh 'echo UNIT TEST'
+                        sh 'mvn test -Pdev'
                     }
                 }
 
