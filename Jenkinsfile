@@ -37,6 +37,39 @@ pipeline {
             }
         }
 
+        stage('SonarQube') {
+                    environment {
+                        scannerHome = tool 'SonarQube Scanner'
+                    }
+                    steps {
+                        //sh 'mvn clean verify'
+                        withSonarQubeEnv('Sonarqube') {
+                            sh 'mvn clean verify sonar:sonar'
+                            //sh "${scannerHome}/bin/sonar-scanner"
+                            //sh "mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar -Dmaven.test.failure.ignore=true -Dsonar.jacoco.reportPaths=${env.WORKSPACE}/target/jacoco.exec"
+                        }
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
+
+                stage("Quality Gate") {
+                    steps {
+                        timeout(time: 1, unit: 'HOURS') {
+                            // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                            // true = set pipeline to UNSTABLE, false = don't
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
+                stage('Cleaning') {
+                    steps {
+                        sh 'mvn -U clean'
+                    }
+                }
+        }
+
         stage ('Quality Code') {
             environment {
                 scannerHome = tool 'SonarQube Scanner'
