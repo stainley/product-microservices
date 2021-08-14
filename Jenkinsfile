@@ -18,7 +18,9 @@ pipeline {
         stage ('Testing') {
             parallel {
                 stage ('Unit Test') {
-
+                    steps {
+                        sh 'echo UNIT TEST'
+                    }
                 }
 
                 stage('Integration Test') {
@@ -30,11 +32,15 @@ pipeline {
         }
 
         stage ('Quality Code') {
-
+            steps {
+                sh 'echo QUARLITY CODE'
+            }
         }
 
         stage ('Deploy to Nexus') {
-
+            steps {
+                sh 'echo DEPLOY TO NEXUS'
+            }
         }
 
         stage ('Deploy') {
@@ -55,7 +61,9 @@ pipeline {
                     }
                     stages {
                         stage('compile') {
-
+                            steps {
+                                sh 'echo COMPILE FEATURE'
+                            }
                         }
                     }
                 }
@@ -67,8 +75,10 @@ pipeline {
                         }
                     }
                     stages {
-                        stage('') {
-
+                        stage('compile') {
+                            steps {
+                                sh 'echo COMPILE HOTFIX'
+                            }
                         }
                     }
                 }
@@ -87,7 +97,7 @@ pipeline {
                         }
                     }
                     steps ('deploy to production') {
-
+                        sh 'echo DEPLOY TO PRODUCTION'
                     }
                 }
             }
