@@ -30,7 +30,7 @@ pipeline {
 
                 stage('Integration Test') {
                     steps {
-                        sh 'mvn test -Pint'
+                        sh 'mvn test -Pdev'
                     }
                 }
             }
