@@ -39,8 +39,6 @@
             <id>sonar-test</id>
             <properties>
                 <sonar.host.url>http://192.168.1.50:9000</sonar.host.url>
-                <sonar.login>admin</sonar.login>
-                <sonar.password>Asd0123456*</sonar.password>
             </properties>
 
             <build>
