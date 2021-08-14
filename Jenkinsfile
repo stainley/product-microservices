@@ -95,9 +95,12 @@ pipeline {
                                 sh 'docker-compose build .'
                             }
                         }
-                    }
-                    steps ('deploy to production') {
-                        sh 'echo DEPLOY TO PRODUCTION'
+
+                        stage('Deploy') {
+                            steps ('deploy to production') {
+                                sh 'echo DEPLOY TO PRODUCTION'
+                            }
+                        }
                     }
                 }
             }
