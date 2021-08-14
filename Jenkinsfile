@@ -54,7 +54,7 @@ pipeline {
                         }
                     }
                     stages {
-                        stage('') {
+                        stage('compile') {
 
                         }
                     }

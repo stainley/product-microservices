@@ -1,0 +1,19 @@
+server:
+  port: 7002
+  error:
+    include-message: always
+spring:
+  profiles:
+    active: @activatedProfile@
+logging:
+  level:
+    root: info
+    com.salapp.product: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+server:
+  port: 8080

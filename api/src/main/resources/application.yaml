@@ -1,0 +1,29 @@
+api:
+  product-composite:
+    product-composite:
+      get-composite-product:
+        description: Returns a composite view of the specified product id
+        notes: |
+          # Normal reponse
+          If the requested product id is found the method will return information regarding:
+          1. Base product information
+          1. Reviews
+          1. Recommendations
+          1. Service address\n(technical information regarding the address of the microservices that created the response)
+
+          #Expected partial and error responses
+
+          ## Product id 113
+          200 - Ok, but not recommendations will be returned
+
+          ## Product id 213
+          200 - Ok, but no reviews will be returned
+
+          ## Non numerical product id
+          400 - A <b>Bad request</b> error will be returned
+
+          ## Product id 13
+          404 -A <b>Not found</b> error will be returned
+
+          ## Negative product ids
+          422 - An <b>Unprocessable Entity</b> error will be returned

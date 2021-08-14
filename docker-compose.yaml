@@ -1,0 +1,36 @@
+version: '2.7'
+
+services:
+  product:
+    build:
+      context: product
+      dockerfile: Dockerfile
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  recommendation:
+    build:
+      context: recommendation
+      dockerfile: Dockerfile
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  review:
+    build:
+      context: review
+      dockerfile: Dockerfile
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  product-composite:
+    build:
+      context: product-composite
+      dockerfile: Dockerfile
+    mem_limit: 350m
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
