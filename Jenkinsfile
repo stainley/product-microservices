@@ -37,8 +37,17 @@ pipeline {
         }
 
         stage ('Quality Code') {
+            environment {
+                scannerHome = tool 'SonarQube Scanner'
+            }
+
             steps {
-                sh 'echo QUARLITY CODE'
+                withSonarQubeEnv('Sonarqube') {
+                     sh 'mvn jacocoTestReport sonarqube'
+                }
+                timeout(time: 15, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
