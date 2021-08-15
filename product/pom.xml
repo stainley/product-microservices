@@ -18,6 +18,7 @@
         <java.version>11</java.version>
         <testcontainers.version>1.15.3</testcontainers.version>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../product/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     </properties>
 
     <profiles>
@@ -145,7 +146,7 @@
             </plugin>
         </plugins>
     </build>
-    <!--<reporting>
+    <reporting>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -159,6 +160,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </reporting>-->
+    </reporting>
 
 </project>
