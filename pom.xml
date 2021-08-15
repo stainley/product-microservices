@@ -30,8 +30,10 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../**/target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
-        <jacoco.version>0.7.9</jacoco.version>
         <sonar-jacoco-listeners.version>1.4</sonar-jacoco-listeners.version>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/../**/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <profiles>
@@ -80,7 +82,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
+                        <version>0.8.7</version>
                         <executions>
                             <!-- Prepares a variable, jacoco.agent.ut.arg, that contains the info
                                 to be passed to the JVM hosting the code being tested. -->
@@ -109,6 +111,13 @@
                                     <propertyName>jacoco.agent.it.arg</propertyName>
                                     <append>true</append>
                                 </configuration>
+                            </execution>
+                            <execution>
+                                <id>report-aggregate</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
