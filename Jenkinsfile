@@ -81,7 +81,8 @@ pipeline {
         }
         stage('Cleaning') {
             steps {
-                sh 'mvn -U clean'
+                //sh 'mvn -U clean'
+                sh 'echo DONT DELETE'
             }
         }
 

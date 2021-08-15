@@ -15,9 +15,10 @@
     <description>review</description>
     <properties>
         <java.version>11</java.version>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../review/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>dev</id>
             <activation>
@@ -27,7 +28,7 @@
                 <activatedProfile>dev</activatedProfile>
             </properties>
         </profile>
-    </profiles>
+    </profiles>-->
 
     <dependencies>
         <dependency>
@@ -75,7 +76,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
@@ -85,7 +86,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- attached to Maven test phase -->
+                    &lt;!&ndash; attached to Maven test phase &ndash;&gt;
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
@@ -94,7 +95,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
