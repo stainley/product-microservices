@@ -36,7 +36,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>sonar-test</id>
             <properties>
@@ -50,7 +50,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <argLine>${jacoco.agent.ut.arg}</argLine>
-                            <!-- Specify to generate mapping between tests and covered code -->
+                            &lt;!&ndash; Specify to generate mapping between tests and covered code &ndash;&gt;
                             <properties>
                                 <property>
                                     <name>Listener</name>
@@ -66,15 +66,15 @@
                         <version>3.0.0-M3</version>
                         <configuration>
                             <argLine>-Xmx1024m -XX:MaxPermSize=256m ${jacoco.agent.it.arg}</argLine>
-                            <!-- Specific to generate mapping between tests and covered code -->
+                            &lt;!&ndash; Specific to generate mapping between tests and covered code &ndash;&gt;
                             <properties>
                                 <property>
                                     <name>listener</name>
                                     <value>org.sonar.java.jacoco.JUnitListener</value>
                                 </property>
                             </properties>
-                            <!-- Let's put failsafe reports with surefire to have access to tests
-                                failures/success reports in sonar -->
+                            &lt;!&ndash; Let's put failsafe reports with surefire to have access to tests
+                                failures/success reports in sonar &ndash;&gt;
                             <reportsDirectory>${project.build.directory}/**/surefire-reports
                             </reportsDirectory>
                         </configuration>
@@ -84,8 +84,8 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.7</version>
                         <executions>
-                            <!-- Prepares a variable, jacoco.agent.ut.arg, that contains the info
-                                to be passed to the JVM hosting the code being tested. -->
+                            &lt;!&ndash; Prepares a variable, jacoco.agent.ut.arg, that contains the info
+                                to be passed to the JVM hosting the code being tested. &ndash;&gt;
                             <execution>
                                 <id>prepare-ut-agent</id>
                                 <phase>process-test-classes</phase>
@@ -98,8 +98,8 @@
                                     <append>true</append>
                                 </configuration>
                             </execution>
-                            <!-- Prepares a variable, jacoco.agent.it.arg, that contains the info
-                                to be passed to the JVM hosting the code being tested. -->
+                            &lt;!&ndash; Prepares a variable, jacoco.agent.it.arg, that contains the info
+                                to be passed to the JVM hosting the code being tested. &ndash;&gt;
                             <execution>
                                 <id>prepare-it-agent</id>
                                 <phase>pre-integration-test</phase>
@@ -133,7 +133,7 @@
             </dependencies>
         </profile>
 
-    </profiles>
+    </profiles>-->
 
     <build>
         <plugins>
@@ -143,11 +143,20 @@
                 <version>0.8.7</version>
                 <executions>
                     <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+                <!--<executions>
+                    <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- attached to Maven test phase -->
+                    &lt;!&ndash; attached to Maven test phase &ndash;&gt;
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
@@ -155,7 +164,7 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
