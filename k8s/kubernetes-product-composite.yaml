@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-composite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-composite
+  template:
+    metadata:
+      labels:
+        app: product-composite
+    spec:
+      containers:
+        - name: app
+          image: localhost:32000/product-composite
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          env:
+            - name: spring.profiles.active
+              value: "prod"
+            - name: product.url
+              value: "http://$(SPRINGBOOT_PRODUCT_SVC_SERVICE_HOST):8080"
+            - name: recommendation.url
+              value: "http://$(SPRINGBOOT_RECOMMENDATION_SVC_SERVICE_HOST):8080"
+            - name: reviews.url
+              value: "http://$(SPRINGBOOT_REVIEWS_SVC_SERVICE_HOST):8080"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-composite-service
+spec:
+  selector:
+    app: product-composite
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+

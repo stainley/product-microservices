@@ -67,8 +67,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
             Product product = restTemplate.getForObject(url, Product.class);
 
-            assert product != null;
-            LOG.debug("Found a product with id: {}", Optional.of(product.getProductId()));
+            LOG.debug("Found a product with id: {}", Optional.of(product.getProductId()).get());
 
             return product;
         } catch (HttpClientErrorException ex) {

@@ -30,6 +30,8 @@ public class ProductServiceImpl implements ProductService {
 
         if (productId == 13) throw new NotFoundException("No product found for productId: " + productId);
 
+        if (productId == 500) throw new NullPointerException("Null pointer exception for productId: " + productId);
+
         return new Product(productId, "name-" + productId, 123, serviceUtil.getServiceAddress());
     }
 }
