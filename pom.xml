@@ -32,7 +32,7 @@
         <!--<sonar.jacoco.reportPath>${project.basedir}/../**/target/jacoco.exec</sonar.jacoco.reportPath>-->
         <sonar.language>java</sonar.language>
         <sonar-jacoco-listeners.version>1.4</sonar-jacoco-listeners.version>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/**/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <profiles>
@@ -160,6 +160,11 @@
         <dependency>
             <groupId>com.salapp.composite.product</groupId>
             <artifactId>product-composite</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.salapp.recommendation</groupId>
+            <artifactId>recommendation</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
