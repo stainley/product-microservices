@@ -69,13 +69,13 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        /* stage('Build') {
             steps {
                 sh 'mvn package'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: '**//* target *//*.jar', fingerprint: true
                 }
             }
         }
@@ -84,22 +84,8 @@ pipeline {
                 //sh 'mvn -U clean'
                 sh 'echo DONT DELETE'
             }
-        }
-
-        /* stage ('Quality Code') {
-            environment {
-                scannerHome = tool 'SonarQube Scanner'
-            }
-
-            steps {
-                withSonarQubeEnv('Sonarqube') {
-                     sh 'mvn jacocoTestReport sonarqube'
-                }
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
         } */
+
 
         stage ('Deploy to Nexus') {
             steps {
