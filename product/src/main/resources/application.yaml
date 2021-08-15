@@ -1,3 +1,4 @@
+
 server:
   port: 7001
   error:
@@ -5,11 +6,12 @@ server:
 spring:
   profiles:
     active: @activatedProfile@
+  main:
+    banner-mode: off
 logging:
   level:
     root: info
     com.salapp.product: debug
-
 ---
 spring:
   config:
