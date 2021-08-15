@@ -177,7 +177,8 @@
                 <configuration>
                     <excludes>
                         <exclude>**/**/ProductApplication.*</exclude>
-                        <exclude>com.salapp.review.ReviewApplication</exclude>
+                        <exclude>**/**/ReviewApplication.*</exclude>
+                        <exclude>**/**/RecommendationApplication.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
