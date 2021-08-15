@@ -18,7 +18,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../review/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
-    <!--<profiles>
+    <profiles>
         <profile>
             <id>dev</id>
             <activation>
@@ -28,7 +28,7 @@
                 <activatedProfile>dev</activatedProfile>
             </properties>
         </profile>
-    </profiles>-->
+    </profiles>
 
     <dependencies>
         <dependency>
