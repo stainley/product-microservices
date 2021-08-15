@@ -146,6 +146,19 @@
 
     </profiles>-->
 
+    <dependencies>
+        <dependency>
+            <groupId>com.salapp.product</groupId>
+            <artifactId>product</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.salapp.review</groupId>
+            <artifactId>review</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
