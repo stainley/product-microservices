@@ -15,7 +15,8 @@
     <description>review</description>
     <properties>
         <java.version>11</java.version>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../review/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/review/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <profiles>
