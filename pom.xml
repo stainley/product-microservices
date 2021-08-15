@@ -36,6 +36,18 @@
         </sonar.coverage.jacoco.xmlReportPaths>-->
     </properties>
 
+    <profiles>
+    <profile>
+        <id>dev</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <activatedProfile>dev</activatedProfile>
+        </properties>
+    </profile>
+</profiles>
+
     <!--<profiles>
         <profile>
             <id>sonar-test</id>
