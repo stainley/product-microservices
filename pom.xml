@@ -158,13 +158,13 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.salapp.composite.product</groupId>
-            <artifactId>product-composite</artifactId>
+            <groupId>com.salapp.recommendation</groupId>
+            <artifactId>recommendation</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.salapp.recommendation</groupId>
-            <artifactId>recommendation</artifactId>
+            <groupId>com.salapp.composite.product</groupId>
+            <artifactId>product-composite</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -176,6 +176,12 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
                 <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <id>report</id>
                         <goals>
