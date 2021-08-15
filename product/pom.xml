@@ -115,9 +115,6 @@
                     <execution>
                         <id>cobertura</id>
                         <phase>test</phase>
-                        <goals>
-                            <goal>cobertura</goal>
-                        </goals>
                         <configuration>
                             <formats>
                                 <format>html</format>
