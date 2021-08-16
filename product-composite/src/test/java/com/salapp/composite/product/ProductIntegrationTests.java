@@ -7,6 +7,7 @@ import com.salapp.api.core.review.Review;
 import com.salapp.composite.product.services.ProductCompositeIntegration;
 import com.salapp.util.exceptions.InvalidInputException;
 import com.salapp.util.exceptions.NotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -172,23 +174,27 @@ public class ProductIntegrationTests {
         }
 
         @Test
-        @ExceptionHandler(value = HttpClientErrorException.class)
+        @ExceptionHandler
         void getProductUnknownException() throws Exception {
 
             mockServer.expect(ExpectedCount.once(),
                             requestTo(new URI("http://localhost:7001/product/" + PRODUCT_ID_INVALID)))
                     .andExpect(method(HttpMethod.GET))
-                    .andRespond(withStatus(HttpStatus.BAD_GATEWAY)
+                    .andRespond(withStatus(HttpStatus.FORBIDDEN)
                             .contentType(APPLICATION_JSON)
                             .body(mapper.writeValueAsString(new Product()))
                     );
 
-            try {
+
+            //Assertions.assertThrows(HttpClientErrorException.BadRequest.class, this::getProductUnknownException);
+            //integration.getProduct(PRODUCT_ID_INVALID);
+
+            Exception exception = Assertions.assertThrows(HttpClientErrorException.Forbidden.class, () -> {
                 integration.getProduct(PRODUCT_ID_INVALID);
-                mockServer.verify();
-            } catch (HttpServerErrorException.BadGateway nfe) {
-                assertThat(nfe).isInstanceOf(HttpServerErrorException.BadGateway.class);
-            }
+            });
+            mockServer.verify();
+            assertThat(exception).isInstanceOf(HttpClientErrorException.Forbidden.class);
+
         }
 
         @Test

@@ -90,8 +90,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     private String getErrorMessage(HttpClientErrorException ex) {
         try {
             return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-        } catch (IOException ioex) {
-            return ex.getMessage();
+        } catch (Exception iex) {
+            return iex.getMessage();
         }
     }
 
