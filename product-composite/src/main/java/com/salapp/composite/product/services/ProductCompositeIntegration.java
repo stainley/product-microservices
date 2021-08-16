@@ -61,7 +61,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     @Override
     public Product getProduct(int productId) {
-        Product product = new Product();
+        Product product;
+
         try {
             String url = productServiceUrl + productId;
             LOG.debug("Will call getProduct API on URL: {}", url);

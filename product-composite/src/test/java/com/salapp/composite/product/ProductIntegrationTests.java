@@ -210,6 +210,26 @@ public class ProductIntegrationTests {
                 assertThat(e).isInstanceOf(HttpServerErrorException.InternalServerError.class);
             }
         }
+
+        @Test
+        void getReviewException() throws Exception {
+
+            mockServer.expect(
+                            ExpectedCount.once(),
+                            requestTo(new URI("http://localhost:7003/review?productId=" + PRODUCT_ID_NOT_FOUND)))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(
+                            withStatus(HttpStatus.NOT_FOUND)
+                                    .contentType(APPLICATION_JSON)
+                                    .body(mapper.writeValueAsString(Collections.singletonList(new Recommendation())))
+                    );
+
+            List<Review> reviews = integration.getReviews(PRODUCT_ID_NOT_FOUND);
+            mockServer.verify();
+
+            assertThat(reviews.size()).isEqualTo(0);
+
+        }
     }
 
 }
