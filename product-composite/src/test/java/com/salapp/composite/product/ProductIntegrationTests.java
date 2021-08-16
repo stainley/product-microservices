@@ -19,7 +19,6 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -192,9 +191,11 @@ public class ProductIntegrationTests {
                                     .body(mapper.writeValueAsString(Collections.singletonList(new Recommendation())))
                     );
 
-            Exception exception = Assertions.assertThrows(HttpServerErrorException.InternalServerError.class, () -> integration.getRecommendations(PRODUCT_ID_NOT_FOUND));
+            List<Recommendation> recommendations = integration.getRecommendations(PRODUCT_ID_NOT_FOUND);
+
             mockServer.verify();
-            assertThat(exception).isInstanceOf(HttpServerErrorException.InternalServerError.class);
+
+            assertThat(recommendations.size()).isEqualTo(0);
         }
 
         @Test
