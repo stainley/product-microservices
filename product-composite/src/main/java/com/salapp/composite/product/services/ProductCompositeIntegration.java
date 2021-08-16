@@ -61,12 +61,14 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     @Override
     public Product getProduct(int productId) {
+        Product product = new Product();
         try {
             String url = productServiceUrl + productId;
             LOG.debug("Will call getProduct API on URL: {}", url);
 
-            Product product = restTemplate.getForObject(url, Product.class);
+            product = restTemplate.getForObject(url, Product.class);
 
+            assert product != null;
             LOG.debug("Found a product with id: {}", Optional.of(product.getProductId()).get());
 
             return product;
