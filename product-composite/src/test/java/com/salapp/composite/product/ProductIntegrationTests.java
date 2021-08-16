@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -152,41 +153,59 @@ public class ProductIntegrationTests {
 
         @Test
         @ExceptionHandler(value = HttpClientErrorException.class)
-        void getProductInvalid() {
+        void getProductInvalid() throws Exception {
+
+            mockServer.expect(ExpectedCount.once(),
+                            requestTo(new URI("http://localhost:7001/product/" + PRODUCT_ID_INVALID)))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+                            .contentType(APPLICATION_JSON)
+                            .body(mapper.writeValueAsString(new Product()))
+                    );
+
             try {
-                mockServer.expect(ExpectedCount.once(),
-                                requestTo(new URI("http://localhost:7001/product/" + PRODUCT_ID_INVALID)))
-                        .andExpect(method(HttpMethod.GET))
-                        .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-                                .contentType(APPLICATION_JSON)
-                                .body(mapper.writeValueAsString(new Product()))
-                        );
-
-                try {
-                    integration.getProduct(PRODUCT_ID_INVALID);
-                    mockServer.verify();
-                } catch (InvalidInputException nfe) {
-                    assertThat(nfe).isInstanceOf(InvalidInputException.class);
-                }
-            } catch (Exception e) {
-
+                integration.getProduct(PRODUCT_ID_INVALID);
+                mockServer.verify();
+            } catch (InvalidInputException nfe) {
+                assertThat(nfe).isInstanceOf(InvalidInputException.class);
             }
         }
 
         @Test
         @ExceptionHandler(value = HttpClientErrorException.class)
-        void getProductUnknownException() {
+        void getProductUnknownException() throws Exception {
+
+            mockServer.expect(ExpectedCount.once(),
+                            requestTo(new URI("http://localhost:7001/product/" + PRODUCT_ID_INVALID)))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(withStatus(HttpStatus.BAD_GATEWAY)
+                            .contentType(APPLICATION_JSON)
+                            .body(mapper.writeValueAsString(new Product()))
+                    );
+
             try {
-                integration.getProduct(500).getName();
-            } catch (Exception e) {
-                assertThat(e).isInstanceOf(HttpServerErrorException.InternalServerError.class);
+                integration.getProduct(PRODUCT_ID_INVALID);
+                mockServer.verify();
+            } catch (HttpServerErrorException.BadGateway nfe) {
+                assertThat(nfe).isInstanceOf(HttpServerErrorException.BadGateway.class);
             }
         }
 
         @Test
-        void getRecommendationException() {
+        void getRecommendationException() throws Exception {
+
+            mockServer.expect(
+                            ExpectedCount.once(),
+                            requestTo(new URI("http://localhost:7002/recommendation?productId=" + PRODUCT_ID_NOT_FOUND)))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(
+                            withStatus(HttpStatus.NOT_FOUND)
+                                    .contentType(APPLICATION_JSON)
+                                    .body(mapper.writeValueAsString(Collections.singletonList(new Recommendation())))
+                    );
             try {
-                integration.getRecommendations(13).get(1).getAuthor();
+                integration.getRecommendations(PRODUCT_ID_NOT_FOUND);
+                mockServer.verify();
             } catch (Exception e) {
                 assertThat(e).isInstanceOf(HttpServerErrorException.InternalServerError.class);
             }
