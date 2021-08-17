@@ -59,6 +59,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     @Override
+    public Product createProduct(Product body) {
+        return null;
+    }
+
+    @Override
     public Product getProduct(int productId) {
         Product product;
 
@@ -84,6 +89,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                     throw ex;
             }
         }
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+
     }
 
     private String getErrorMessage(HttpClientErrorException ex) {
