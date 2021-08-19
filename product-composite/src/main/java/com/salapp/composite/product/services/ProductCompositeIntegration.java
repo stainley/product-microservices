@@ -123,6 +123,12 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     @Override
+    public Review createReview(Review body) {
+
+        return null;
+    }
+
+    @Override
     public List<Review> getReviews(int productId) {
 
         try {
@@ -139,5 +145,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             LOG.warn("Got an exception while requesting recommendations, return zero recommendations: {}", ex.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+
     }
 }

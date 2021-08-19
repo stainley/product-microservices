@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductIntegrationTests {
 
@@ -61,6 +63,7 @@ public class ProductIntegrationTests {
         );
     }
 
+
     @Test
     void getProduct() throws Exception {
         Product newProduct = new Product(PRODUCT_ID_OK, "name-mocked", 1, "mock-address");
@@ -77,6 +80,7 @@ public class ProductIntegrationTests {
 
         assertThat(productReturned.getName()).isEqualTo("name-mocked");
     }
+
 
     @Test
     void getRecommendations() throws Exception {
