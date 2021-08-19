@@ -2,11 +2,14 @@ package com.salapp.review.services;
 
 import com.salapp.api.core.review.Review;
 import com.salapp.api.core.review.ReviewService;
+import com.salapp.review.model.ReviewEntity;
+import com.salapp.review.repositories.ReviewRepository;
 import com.salapp.util.exceptions.InvalidInputException;
 import com.salapp.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,9 +22,30 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ServiceUtil serviceUtil;
 
+    private final ReviewRepository repository;
+
+    private final ReviewMapper mapper;
+
     @Autowired
-    public ReviewServiceImpl(ServiceUtil serviceUtil) {
+    public ReviewServiceImpl(ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
+        this.repository = repository;
+        this.mapper = mapper;
         this.serviceUtil = serviceUtil;
+    }
+
+    @Override
+    public Review createReview(Review body) {
+        try {
+            ReviewEntity entity = mapper.apiToEntity(body);
+            ReviewEntity newEntity = repository.save(entity);
+
+            LOG.debug("createReview: created a review entity: {}/{}", body.getProductId(), body.getReviewId());
+
+            return mapper.entityToApi(newEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Review Id: " + body.getReviewId());
+        }
+
     }
 
     @Override
@@ -41,5 +65,11 @@ public class ReviewServiceImpl implements ReviewService {
         LOG.debug("/reviews response size: {}", list.size());
 
         return list;
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+        LOG.debug("deleteReviews: tries to delete reviews for the product with productId: {}", productId);
+        repository.deleteAll(repository.findByProductId(productId));
     }
 }

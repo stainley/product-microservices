@@ -5,6 +5,11 @@ server:
 spring:
   profiles:
     active: @activatedProfile@
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
 logging:
   level:
     root: info
@@ -14,6 +19,20 @@ logging:
 spring:
   config:
     activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:~/testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+---
+spring:
+  config:
+    activate:
       on-profile: docker
+  datasource:
+    url: jdbc:mysql://mysql/review-db
 server:
   port: 8080
