@@ -105,6 +105,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     @Override
+    public Recommendation createRecommendation(Recommendation body) {
+        return null;
+    }
+
+    @Override
     public List<Recommendation> getRecommendations(int productId) {
         try {
             String url = recommendationServiceUrl + productId;
@@ -120,6 +125,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             LOG.warn("Got an exception while requesting recommendations, return zero recommendations: {}", ex.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public void deleteRecommendations(int productId) {
+
     }
 
     @Override

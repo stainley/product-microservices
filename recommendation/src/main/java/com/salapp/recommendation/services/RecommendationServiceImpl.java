@@ -2,11 +2,14 @@ package com.salapp.recommendation.services;
 
 import com.salapp.api.core.recommendation.Recommendation;
 import com.salapp.api.core.recommendation.RecommendationService;
+import com.salapp.recommendation.model.RecommendationEntity;
+import com.salapp.recommendation.repositories.RecommendationRepository;
 import com.salapp.util.exceptions.InvalidInputException;
 import com.salapp.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -17,29 +20,49 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecommendationServiceImpl.class);
 
+    private final RecommendationRepository repository;
+
+    private final RecommendationMapper mapper;
+
     private final ServiceUtil serviceUtil;
 
+
     @Autowired
-    public RecommendationServiceImpl(ServiceUtil serviceUtil) {
+    public RecommendationServiceImpl(RecommendationRepository repository, RecommendationMapper mapper, ServiceUtil serviceUtil) {
+        this.repository = repository;
+        this.mapper = mapper;
         this.serviceUtil = serviceUtil;
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation body) {
+        try {
+            RecommendationEntity entity = mapper.apiToEntity(body);
+            RecommendationEntity newEntity = repository.save(entity);
+
+            LOG.debug("createRecommendation: created a recommendation entity: {}/{}", body.getProductId(), body.getRecommendationId());
+            return mapper.entityToApi(newEntity);
+        } catch (DuplicateKeyException e) {
+            throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Recommendation Id: " + body.getRecommendationId());
+        }
     }
 
     @Override
     public List<Recommendation> getRecommendations(int productId) {
         if (productId < 1) throw new InvalidInputException("Invalid productId: " + productId);
 
-        if (productId == 123) {
-            LOG.debug("No recommendations found for productId: {}", productId);
-            return new ArrayList<>();
-        }
+        List<RecommendationEntity> entityList = repository.findByProductId(productId);
+        List<Recommendation> list = mapper.entityListToApiList(entityList);
+        list.forEach(e -> e.setServiceAddress(serviceUtil.getServiceAddress()));
 
-        List<Recommendation> list = new ArrayList<>();
-        list.add(new Recommendation(productId, 1, "Author 1", 1, "Content 1", serviceUtil.getServiceAddress()));
-        list.add(new Recommendation(productId, 2, "Author 2", 2, "Content 2", serviceUtil.getServiceAddress()));
-        list.add(new Recommendation(productId, 3, "Author 3", 3, "Content 3", serviceUtil.getServiceAddress()));
-
-        LOG.debug("/recommendation response size: {}", list.size());
+        LOG.debug("getRecommendations: response sizes: {}", list.size());
 
         return list;
+    }
+
+    @Override
+    public void deleteRecommendations(int productId) {
+        LOG.debug("deleteRecommendations: tries to delete recommendations for the product with productId: {}", productId);
+        repository.deleteAll(repository.findByProductId(productId));
     }
 }
