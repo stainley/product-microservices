@@ -69,14 +69,22 @@ class RecommendationApplicationTests {
     }
 
     @Test
+    void deleteRecommendations() {
+        int productId = 1;
+        int recommendationId = 1;
+
+        postAndVerifyRecommendation(productId, recommendationId, HttpStatus.OK);
+        Assertions.assertEquals(1, repository.findByProductId(productId).size());
+
+        deleteVerifyRecommendationsByProductId(productId, HttpStatus.OK);
+        Assertions.assertEquals(0, repository.findByProductId(productId).size());
+
+        deleteVerifyRecommendationsByProductId(productId, HttpStatus.OK);
+    }
+
+    @Test
     public void getRecommendationMissingParameter() {
-        client.get()
-                .uri("/recommendation")
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isEqualTo(BAD_REQUEST)
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        getAndVerifyRecommendationsByProductId("", BAD_REQUEST)
                 .jsonPath("$.path").isEqualTo("/recommendation")
                 .jsonPath("$.message").isEqualTo("Required int parameter 'productId' is not present");
     }
@@ -99,13 +107,7 @@ class RecommendationApplicationTests {
     public void getRecommendationsInvalidParameterNegativeValue() {
         int productIdInvalid = -1;
 
-        client.get()
-                .uri("/recommendation?productId=" + productIdInvalid)
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isEqualTo(UNPROCESSABLE_ENTITY)
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
                 .jsonPath("$.path").isEqualTo("/recommendation")
                 .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
     }
@@ -134,6 +136,15 @@ class RecommendationApplicationTests {
                 .exchange()
                 .expectStatus().isEqualTo(expectedStatus)
                 .expectHeader().contentType(APPLICATION_JSON)
+                .expectBody();
+    }
+
+    private WebTestClient.BodyContentSpec deleteVerifyRecommendationsByProductId(int productId, HttpStatus expectedStatus) {
+        return client.delete()
+                .uri("/recommendation?productId=" + productId)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
                 .expectBody();
     }
 }

@@ -24,6 +24,6 @@ public interface RecommendationService {
      * curl -X DELETE $HOST:$PORT/recommendation?productId=1
      * @param productId
      */
-    @DeleteMapping(value = "/recommendations")
+    @DeleteMapping(value = "/recommendation")
     void deleteRecommendations(@RequestParam(value = "productId", required = true) int productId);
 }
