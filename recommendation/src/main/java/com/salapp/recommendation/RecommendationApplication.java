@@ -33,15 +33,16 @@ public class RecommendationApplication {
     }
 
     @Autowired
-    MongoOperations mongoTemplate;
+    private MongoOperations mongoTemplate;
 
     @EventListener(ContextRefreshedEvent.class)
     public void initIndicesAfterStartup() {
+
         MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext = mongoTemplate.getConverter().getMappingContext();
         IndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);
 
-        IndexOperations indexOps = mongoTemplate.indexOps(RecommendationEntity.class);
-        resolver.resolveIndexFor(RecommendationEntity.class).forEach(indexOps::ensureIndex);
+        IndexOperations indexOperations = mongoTemplate.indexOps(RecommendationEntity.class);
+        resolver.resolveIndexFor(RecommendationEntity.class).forEach(indexOperations::ensureIndex);
     }
 
 }
