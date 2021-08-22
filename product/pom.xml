@@ -34,6 +34,9 @@
         </profile>
         <profile>
             <id>sonar</id>
+            <properties>
+                <activatedProfile>sonar</activatedProfile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

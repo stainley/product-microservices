@@ -46,6 +46,12 @@
         </profile>
         <profile>
             <id>sonar</id>
+            <properties>
+                <activatedProfile>sonar</activatedProfile>
+            </properties>
+        </profile>
+        <profile>
+            <id>sonar</id>
             <dependencies>
                 <dependency>
                     <groupId>com.salapp.product</groupId>
