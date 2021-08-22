@@ -75,6 +75,11 @@ spring:
 spring:
   config:
     activate:
+      on-profile: sonar
+---
+spring:
+  config:
+    activate:
       on-profile: docker
 
 server.port: 8080

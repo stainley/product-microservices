@@ -5,6 +5,8 @@ server:
 spring:
   profiles:
     active: @activatedProfile@
+  main:
+    banner-mode: off
 logging:
   level:
     root: info
@@ -15,6 +17,16 @@ spring:
   config:
     activate:
       on-profile: dev
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: recommendation-db
+---
+spring:
+  config:
+    activate:
+      on-profile: sonar
   data:
     mongodb:
       host: localhost
