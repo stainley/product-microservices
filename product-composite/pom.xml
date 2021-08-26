@@ -16,10 +16,10 @@
     <description>product-composite</description>
     <properties>
         <java.version>11</java.version>
+
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-
         <spring-boot.build-image.imageName>$DOCKER_USER_NAME$/${project.parent.artifactId}-${project.artifactId}
         </spring-boot.build-image.imageName>
     </properties>
@@ -45,11 +45,6 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.7</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/**ProductCompositeIntegration.*</exclude>
-                            </excludes>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -63,6 +58,11 @@
                                 <goals>
                                     <goal>report-aggregate</goal>
                                 </goals>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>**/**ProductCompositeIntegration.*</exclude>
+                                    </excludes>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
