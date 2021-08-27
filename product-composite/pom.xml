@@ -58,11 +58,6 @@
                                 <goals>
                                     <goal>report-aggregate</goal>
                                 </goals>
-                                <configuration>
-                                    <excludes>
-                                        <exclude>**/**ProductCompositeIntegration.*</exclude>
-                                    </excludes>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -84,6 +79,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.7.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.salapp.product</groupId>
             <artifactId>product</artifactId>
             <version>1.0.0</version>
@@ -99,18 +100,12 @@
             <groupId>com.salapp.api</groupId>
             <artifactId>api</artifactId>
             <version>1.0.0</version>
-            <scope>provided</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
             <scope>test</scope>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-feign</artifactId>
-            <version>1.4.7.RELEASE</version>
         </dependency>-->
     </dependencies>
 

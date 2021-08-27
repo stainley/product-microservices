@@ -61,13 +61,13 @@
                     <version>1.0.0</version>
                 </dependency>
                 <dependency>
-                    <groupId>com.salapp.recommendation</groupId>
-                    <artifactId>recommendation</artifactId>
+                    <groupId>com.salapp.composite.product</groupId>
+                    <artifactId>product-composite</artifactId>
                     <version>1.0.0</version>
                 </dependency>
                 <dependency>
-                    <groupId>com.salapp.composite.product</groupId>
-                    <artifactId>product-composite</artifactId>
+                    <groupId>com.salapp.recommendation</groupId>
+                    <artifactId>recommendation</artifactId>
                     <version>1.0.0</version>
                 </dependency>
             </dependencies>
@@ -80,9 +80,7 @@
                         <version>0.8.7</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/**/ProductApplication.*</exclude>
                                 <exclude>**/**/ReviewApplication.*</exclude>
-                                <exclude>**/**/RecommendationApplication.*</exclude>
                                 <exclude>**/model/*.java</exclude>
                             </excludes>
                         </configuration>
@@ -105,20 +103,6 @@
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
-                                <configuration>
-                                    <rules>
-                                        <rule>
-                                            <element>PACKAGE</element>
-                                            <limits>
-                                                <limit>
-                                                    <counter>LINE</counter>
-                                                    <value>COVEREDRATIO</value>
-                                                    <minimum>0.80</minimum>
-                                                </limit>
-                                            </limits>
-                                        </rule>
-                                    </rules>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

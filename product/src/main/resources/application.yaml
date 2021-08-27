@@ -2,8 +2,7 @@ server:
   port: 7001
   error:
     include-message: always
-  profiles:
-    active: @activatedProfile@
+
 logging:
   level:
     root: info
@@ -11,6 +10,8 @@ logging:
 spring:
   main:
     banner-mode: off
+  profiles:
+    active: @activatedProfile@
 ---
 spring:
   config:

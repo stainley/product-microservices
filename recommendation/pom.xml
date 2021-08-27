@@ -50,6 +50,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>com.salapp.recommendation.RecommendationApplication.*</exclude>
+                                <exclude>com.salapp.recommendation.model</exclude>
                             </excludes>
                         </configuration>
                         <executions>

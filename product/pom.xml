@@ -43,6 +43,11 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.7</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>com.salapp.product.ProductApplication</exclude>
+                            </excludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -56,11 +61,6 @@
                                 <goals>
                                     <goal>report-aggregate</goal>
                                 </goals>
-                                <configuration>
-                                    <excludes>
-                                        <exclude>com.salapp.product.ProductApplication.*</exclude>
-                                    </excludes>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
