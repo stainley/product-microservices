@@ -20,8 +20,8 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <spring-boot.build-image.imageName>$DOCKER_USER_NAME$/${project.parent.artifactId}-${project.artifactId}
-        </spring-boot.build-image.imageName>
+        <!--<spring-boot.build-image.imageName>$DOCKER_USER_NAME$/${project.parent.artifactId}-${project.artifactId}
+        </spring-boot.build-image.imageName>-->
     </properties>
 
     <profiles>
@@ -85,12 +85,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.salapp.product</groupId>
-            <artifactId>product</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.salapp.util</groupId>
             <artifactId>util</artifactId>
             <version>1.0.0</version>
@@ -102,11 +96,18 @@
             <version>1.0.0</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.3.9</version>
             <scope>test</scope>
-        </dependency>-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>2.5.3</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,15 +1,12 @@
 package com.salapp.product.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@ToString
+@EqualsAndHashCode
 @Getter
 @Setter
 @Document(collection = "products")
