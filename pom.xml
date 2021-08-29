@@ -98,12 +98,6 @@
                                 </goals>
                                 <phase>verify</phase>
                             </execution>
-                            <execution>
-                                <id>jacoco-check</id>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
                         </executions>
                     </plugin>
 
