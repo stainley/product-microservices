@@ -122,7 +122,7 @@ public class ProductRepositoryTests {
         Page<ProductEntity> productPage = repository.findAll(nextPage);
 
         Assertions.assertEquals(expectedProductIds, productPage.getContent().stream()
-                .map(p -> p.getProductId())
+                .map(ProductEntity::getProductId)
                 .collect(Collectors.toList()).toString());
 
         Assertions.assertEquals(expectsNextPage, productPage.hasNext());
