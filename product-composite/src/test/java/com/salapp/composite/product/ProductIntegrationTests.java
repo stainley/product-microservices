@@ -63,6 +63,63 @@ public class ProductIntegrationTests {
         );
     }
 
+    @Test
+    void createRecommendation() throws Exception {
+
+        Recommendation newRecommendation = new Recommendation(PRODUCT_ID_OK, 1, "Author " + PRODUCT_ID_OK, 1, "Content ", "SA");
+
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI(URL + "7002/recommendation?productId=")))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(newRecommendation))
+                );
+
+        Recommendation recommendationCreated = integration.createRecommendation(newRecommendation);
+        mockServer.verify();
+
+        assertThat(recommendationCreated.getContent()).isEqualTo(newRecommendation.getContent());
+    }
+
+    @Test
+    void createInvalidRecommendation() throws Exception {
+
+        Recommendation newRecommendation = new Recommendation(PRODUCT_ID_OK, 1, "Author " + PRODUCT_ID_OK, 1, "Content ", "SA");
+
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI(URL + "7002/recommendation?productId=")))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.FORBIDDEN)
+                        .contentType(APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(new Recommendation()))
+                );
+
+        Exception exception = Assertions.assertThrows(HttpClientErrorException.Forbidden.class, () -> integration.createRecommendation(newRecommendation));
+        mockServer.verify();
+
+        assertThat(exception).isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
+    @Test
+    void createInvalidProduct() throws Exception {
+
+        Product newProduct = new Product(PRODUCT_ID_INVALID, null, 1, "mock-address");
+
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI(URL + "7001/product/")))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.FORBIDDEN)
+                        .contentType(APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(new Product()))
+                );
+
+        Exception exception = Assertions.assertThrows(HttpClientErrorException.Forbidden.class, () -> integration.createProduct(newProduct));
+        mockServer.verify();
+
+        assertThat(exception).isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
 
     @Test
     void getProduct() throws Exception {
@@ -79,6 +136,53 @@ public class ProductIntegrationTests {
         mockServer.verify();
 
         assertThat(productReturned.getName()).isEqualTo("name-mocked");
+    }
+
+    @Test
+    void createProduct() throws Exception {
+        Product newProduct = new Product(PRODUCT_ID_OK, "name-mocked", 1, "mock-address");
+
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI(URL + "7001/product/")))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(newProduct)));
+
+        Product productCreated = integration.createProduct(newProduct);
+        mockServer.verify();
+
+        assertThat(productCreated.getName()).isEqualTo("name-mocked");
+    }
+
+    @Test
+    void deleteProduct() throws Exception {
+        Product newProduct = new Product(PRODUCT_ID_OK, "name-mocked", 1, "mock-address");
+
+        mockServer.expect(
+                        requestTo(new URI(URL + "7001/product/" + PRODUCT_ID_OK)))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.OK));
+
+        integration.deleteProduct(PRODUCT_ID_OK);
+        mockServer.verify();
+
+    }
+
+    @Test
+    void deleteProductNotFound() throws Exception {
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI(URL + "7001/product/" + PRODUCT_ID_NOT_FOUND)))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND)
+                        .contentType(APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(new Product()))
+                );
+
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> integration.deleteProduct(PRODUCT_ID_NOT_FOUND));
+        mockServer.verify();
+
+        assertThat(exception).isInstanceOf(NotFoundException.class);
     }
 
 
@@ -165,7 +269,6 @@ public class ProductIntegrationTests {
         }
 
         @Test
-        @ExceptionHandler
         void getProductUnknownException() throws Exception {
 
             mockServer.expect(ExpectedCount.once(),
@@ -222,4 +325,12 @@ public class ProductIntegrationTests {
         }
     }
 
+    private void deleteAndVerifyProduct(int productId, HttpStatus expectedStatus) throws Exception {
+
+        mockServer.expect(ExpectedCount.once(), requestTo(new URI("7001/product?productId=" + PRODUCT_ID_OK)))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.OK));
+
+        integration.deleteProduct(productId);
+    }
 }
