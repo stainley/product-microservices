@@ -1,21 +1,44 @@
-
 server:
   port: 7001
   error:
     include-message: always
-spring:
-  profiles:
-    active: @activatedProfile@
-  main:
-    banner-mode: off
+
 logging:
   level:
     root: info
     com.salapp.product: debug
+spring:
+  main:
+    banner-mode: off
+  profiles:
+    active: @activatedProfile@
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: product-db
+---
+spring:
+  config:
+    activate:
+      on-profile: sonar
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: product-db
 ---
 spring:
   config:
     activate:
       on-profile: docker
+  data:
+    mongodb:
+      host: mongodb
 server:
   port: 8080

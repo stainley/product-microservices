@@ -42,6 +42,11 @@ api:
           422 - An <b>Unprocessable Entity</b> error will be returned
 
 server.port: 7000
+spring:
+  profiles:
+    active: @activatedProfile@
+  main:
+    banner-mode: off
 server:
   error:
     include-message: always
@@ -61,7 +66,16 @@ logging:
   level:
     root: info
     com.salapp: debug
-
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: sonar
 ---
 spring:
   config:

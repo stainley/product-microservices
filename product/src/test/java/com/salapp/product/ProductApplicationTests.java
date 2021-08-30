@@ -1,83 +1,129 @@
 package com.salapp.product;
 
+import com.salapp.api.core.product.Product;
+import com.salapp.product.repositories.ProductRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static reactor.core.publisher.Mono.just;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port: 0"})
 class ProductApplicationTests {
 
     @Autowired
     private WebTestClient client;
 
-    @Test
-    void contextLoads() {
+    @Autowired
+    private ProductRepository repository;
+
+    @BeforeEach
+    void setUp() {
+        repository.deleteAll();
     }
 
     @Test
-    public void getProductById() {
+    void getProductById() {
         int productId = 1;
 
-        client.get()
-                .uri("/product/" + productId)
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        postAndVerifyProduct(productId, OK);
+
+        Assertions.assertTrue(repository.findByProductId(productId).isPresent());
+
+        getAndVerifyProduct(productId, OK)
                 .jsonPath("$.productId").isEqualTo(productId);
+
     }
 
     @Test
-    public void getProductInvalidParameterString() {
+    void duplicateError() {
+        int productId = 1;
+        postAndVerifyProduct(productId, OK);
 
-        client.get()
-                .uri("/product/no-integer")
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isEqualTo(BAD_REQUEST)
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        postAndVerifyProduct(productId, UNPROCESSABLE_ENTITY)
+                .jsonPath("$.path").isEqualTo("/product")
+                .jsonPath("$.message").isEqualTo("Duplicate key, Product Id: " + productId);
+    }
+
+    @Test
+    @DisplayName("when product is deleted")
+    void deleteProduct() {
+        int productId = 1;
+        postAndVerifyProduct(productId, OK);
+
+        deleteAndVerifyProduct(productId, OK);
+
+        Assertions.assertFalse(repository.findByProductId(productId).isPresent());
+
+        deleteAndVerifyProduct(productId, OK);
+    }
+
+    @Test
+    void getProductInvalidParameterString() {
+
+        getAndVerifyProduct("/no-integer", BAD_REQUEST)
                 .jsonPath("$.path").isEqualTo("/product/no-integer")
                 .jsonPath("$.message").isEqualTo("Type mismatch.");
     }
 
     @Test
-    public void getProductNotFound() {
+    void getProductNotFound() {
         int productIdNotFound = 13;
 
-        client.get()
-                .uri("/product/" + productIdNotFound)
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isNotFound()
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        getAndVerifyProduct(productIdNotFound, NOT_FOUND)
                 .jsonPath("$.path").isEqualTo("/product/" + productIdNotFound)
                 .jsonPath("$.message").isEqualTo("No product found for productId: " + productIdNotFound);
     }
 
     @Test
-    public void getProductInvalidParameterNegativeValue() {
+    void getProductInvalidParameterNegativeValue() {
         int productIdInvalid = -1;
 
-        client.get()
-                .uri("/product/" + productIdInvalid)
-                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
-                .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody()
+        getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_ENTITY)
                 .jsonPath("$.path").isEqualTo("/product/" + productIdInvalid)
                 .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
+    }
+
+    private WebTestClient.BodyContentSpec getAndVerifyProduct(int productId, HttpStatus expectedStatus) {
+        return getAndVerifyProduct("/" + productId, expectedStatus);
+    }
+
+    private WebTestClient.BodyContentSpec getAndVerifyProduct(String productIdPath, HttpStatus expectedStatus) {
+        return client.get()
+                .uri("/product" + productIdPath)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
+                .expectHeader().contentType(APPLICATION_JSON)
+                .expectBody();
+    }
+
+    private WebTestClient.BodyContentSpec postAndVerifyProduct(int productId, HttpStatus expectedStatus) {
+        Product product = new Product(productId, "Name " + productId, productId, "SA");
+        return client.post()
+                .uri("/product")
+                .body(just(product), Product.class)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
+                .expectHeader().contentType(APPLICATION_JSON)
+                .expectBody();
+    }
+
+    private void deleteAndVerifyProduct(int productId, HttpStatus expectedStatus) {
+        client.delete()
+                .uri("/product/" + productId)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
+                .expectBody();
     }
 
 }
