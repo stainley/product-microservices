@@ -20,8 +20,8 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <!--<spring-boot.build-image.imageName>$DOCKER_USER_NAME$/${project.parent.artifactId}-${project.artifactId}
-        </spring-boot.build-image.imageName>-->
+        <spring-boot.build-image.imageName>$DOCKER_USER_NAME$/${project.parent.artifactId}-${project.artifactId}
+        </spring-boot.build-image.imageName>
     </properties>
 
     <profiles>
