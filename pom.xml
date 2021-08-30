@@ -81,7 +81,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/**/ReviewApplication.*</exclude>
-                                <exclude>**/model/*.java</exclude>
                             </excludes>
                         </configuration>
                         <executions>
@@ -112,12 +111,6 @@
     </profiles>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>-->
-
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
