@@ -24,17 +24,13 @@ class RecommendationApplicationTests {
     @Autowired
     private RecommendationRepository repository;
 
-    @Test
-    void contextLoads() {
-    }
-
     @BeforeEach
     void setUpDB() {
         repository.deleteAll();
     }
 
     @Test
-    public void getRecommendationsByProductId() {
+    void getRecommendationsByProductId() {
         int productId = 1;
 
         postAndVerifyRecommendation(productId, 1, HttpStatus.OK);
@@ -82,14 +78,14 @@ class RecommendationApplicationTests {
     }
 
     @Test
-    public void getRecommendationMissingParameter() {
+    void getRecommendationMissingParameter() {
         getAndVerifyRecommendationsByProductId("", BAD_REQUEST)
                 .jsonPath("$.path").isEqualTo("/recommendation")
                 .jsonPath("$.message").isEqualTo("Required int parameter 'productId' is not present");
     }
 
     @Test
-    public void getRecommendationsNotFound() {
+    void getRecommendationsNotFound() {
         int productIdNotFound = 123;
 
         client.get()
@@ -103,7 +99,7 @@ class RecommendationApplicationTests {
     }
 
     @Test
-    public void getRecommendationsInvalidParameterNegativeValue() {
+    void getRecommendationsInvalidParameterNegativeValue() {
         int productIdInvalid = -1;
 
         getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)

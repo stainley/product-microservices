@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-public class ProductRepositoryTests {
+class ProductRepositoryTests {
 
     @Autowired
     private ProductRepository repository;
@@ -47,16 +47,17 @@ public class ProductRepositoryTests {
         Assertions.assertEquals(product1.hashCode(), product2.hashCode());
     }
 
-
     @Test
     void create() {
         ProductEntity newEntity = new ProductEntity(2, "n", 2);
         repository.save(newEntity);
 
-        ProductEntity foundEntity = repository.findById(newEntity.getId()).get();
-        Assertions.assertEquals(newEntity.getId(), foundEntity.getId());
+        Optional<ProductEntity> foundEntity = repository.findById(newEntity.getId());
 
-        Assertions.assertEquals(2, repository.count());
+        foundEntity.ifPresent(productEntity -> {
+            Assertions.assertEquals(newEntity.getId(), productEntity.getId());
+            Assertions.assertEquals(2, repository.count());
+        });
     }
 
     @Test
@@ -64,9 +65,13 @@ public class ProductRepositoryTests {
         savedEntity.setName("n2");
         repository.save(savedEntity);
 
-        ProductEntity foundEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, foundEntity.getVersion());
-        Assertions.assertEquals("n2", foundEntity.getName());
+        Optional<ProductEntity> foundEntity = repository.findById(savedEntity.getId());
+
+        foundEntity.ifPresent(productEntity -> {
+            Assertions.assertEquals(1, productEntity.getVersion());
+            Assertions.assertEquals("n2", productEntity.getName());
+        });
+
     }
 
     @Test
@@ -93,23 +98,30 @@ public class ProductRepositoryTests {
 
     @Test
     void optimisticLockError() {
-        ProductEntity entity1 = repository.findById(savedEntity.getId()).get();
-        ProductEntity entity2 = repository.findById(savedEntity.getId()).get();
+        Optional<ProductEntity> entity1 = repository.findById(savedEntity.getId());
+        Optional<ProductEntity> entity2 = repository.findById(savedEntity.getId());
 
-        entity1.setName("n1");
-        repository.save(entity1);
+        entity1.ifPresent(productEntity -> {
+            productEntity.setName("n1");
+            repository.save(productEntity);
+        });
 
         try {
-            entity2.setName("n2");
-            repository.save(entity2);
+            entity2.ifPresent(productEntity -> {
+                productEntity.setName("n2");
+                repository.save(productEntity);
+            });
 
             Assertions.fail("Expected an OptimisticLockingFailureException");
         } catch (OptimisticLockingFailureException e) {
+            Assertions.assertNotNull(e);
         }
 
-        ProductEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, updatedEntity.getVersion());
-        Assertions.assertEquals("n1", updatedEntity.getName());
+        Optional<ProductEntity> updatedEntity = repository.findById(savedEntity.getId());
+        updatedEntity.ifPresent(productEntity -> {
+            Assertions.assertEquals(1, productEntity.getVersion());
+            Assertions.assertEquals("n1", productEntity.getName());
+        });
     }
 
     @Test
@@ -126,6 +138,8 @@ public class ProductRepositoryTests {
         nextPage = testNextPage(nextPage, "[1001, 1002, 1003, 1004]", true);
         nextPage = testNextPage(nextPage, "[1005, 1006, 1007, 1008]", true);
         nextPage = testNextPage(nextPage, "[1009, 1010]", false);
+
+        Assertions.assertNotNull(nextPage);
     }
 
     private Pageable testNextPage(Pageable nextPage, String expectedProductIds, boolean expectsNextPage) {

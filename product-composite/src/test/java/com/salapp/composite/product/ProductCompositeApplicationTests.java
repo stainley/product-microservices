@@ -58,7 +58,7 @@ class ProductCompositeApplicationTests {
     }
 
     @Test
-    public void getProductById() {
+    void getProductById() {
 
         getAndVerifyProduct(PRODUCT_ID_OK, HttpStatus.OK)
                 .jsonPath("$.productId").isEqualTo(1)
@@ -67,7 +67,7 @@ class ProductCompositeApplicationTests {
     }
 
     @Test
-    public void getProductNotFound() {
+    void getProductNotFound() {
         client.get()
                 .uri("/product-composite/" + PRODUCT_ID_NOT_FOUND)
                 .accept(APPLICATION_JSON)
@@ -80,7 +80,7 @@ class ProductCompositeApplicationTests {
     }
 
     @Test
-    public void getProductInvalidInput() {
+    void getProductInvalidInput() {
         client.get()
                 .uri("/product-composite/" + PRODUCT_ID_INVALID)
                 .accept(APPLICATION_JSON)

@@ -126,7 +126,6 @@ public class ProductIntegrationTests {
 
         @Test
         void deleteRecommendation() throws Exception {
-            Product newProduct = new Product(PRODUCT_ID_OK, "name-mocked", 1, "mock-address");
 
             mockServer.expect(
                             requestTo(new URI(URL + "7002/recommendation?productId=" + PRODUCT_ID_OK)))
@@ -212,7 +211,6 @@ public class ProductIntegrationTests {
 
         @Test
         void deleteProduct() throws Exception {
-            Product newProduct = new Product(PRODUCT_ID_OK, "name-mocked", 1, "mock-address");
 
             mockServer.expect(
                             requestTo(new URI(URL + "7001/product/" + PRODUCT_ID_OK)))
@@ -404,7 +402,7 @@ public class ProductIntegrationTests {
 
             mockServer.verify();
 
-            assertThat(recommendations.size()).isEqualTo(0);
+            assertThat(recommendations.size()).isZero();
         }
 
         @Test
@@ -423,7 +421,7 @@ public class ProductIntegrationTests {
             List<Review> reviews = integration.getReviews(PRODUCT_ID_NOT_FOUND);
             mockServer.verify();
 
-            assertThat(reviews.size()).isEqualTo(0);
+            assertThat(reviews.size()).isZero();
         }
     }
 

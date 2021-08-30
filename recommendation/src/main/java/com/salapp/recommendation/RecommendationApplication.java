@@ -3,7 +3,6 @@ package com.salapp.recommendation;
 import com.salapp.recommendation.model.RecommendationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -24,16 +23,19 @@ public class RecommendationApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecommendationApplication.class);
 
+    public RecommendationApplication(MongoOperations mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(RecommendationApplication.class, args);
 
         String mongoDbHost = ctx.getEnvironment().getProperty("spring.data.mongodb.host");
         String mongoDbPort = ctx.getEnvironment().getProperty("spring.data.mongodb.port");
-        LOG.info("Connected to MongoDB: " + mongoDbHost + ":" + mongoDbPort);
+        LOG.info("Connected to MongoDB: {} : {}", mongoDbHost, mongoDbPort);
     }
 
-    @Autowired
-    private MongoOperations mongoTemplate;
+    private final MongoOperations mongoTemplate;
 
     @EventListener(ContextRefreshedEvent.class)
     public void initIndicesAfterStartup() {

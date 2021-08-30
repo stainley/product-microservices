@@ -26,16 +26,13 @@ class ReviewApplicationTests {
     @Autowired
     private ReviewRepository repository;
 
-    @Test
-    public void context() {}
-
     @BeforeEach
-    public void setupDB() {
+    void setupDB() {
         repository.deleteAll();
     }
 
     @Test
-    public void getReviewsByProductId() {
+    void getReviewsByProductId() {
         int productId = 1;
 
         Assertions.assertEquals(0, repository.findByProductId(productId).size());
@@ -87,27 +84,27 @@ class ReviewApplicationTests {
     }
 
     @Test
-    public void getReviewsMissingParameter() {
+    void getReviewsMissingParameter() {
         getAndVerifyReviewsByProductId("", BAD_REQUEST)
                 .jsonPath("$.path").isEqualTo("/review")
                 .jsonPath("$.message").isEqualTo("Required int parameter 'productId' is not present");
     }
 
     @Test
-    public void getReviewInvalidParameterTest() {
+    void getReviewInvalidParameterTest() {
         getAndVerifyReviewsByProductId("?productId=no-integer", BAD_REQUEST)
                 .jsonPath("$.path").isEqualTo("/review")
                 .jsonPath("$.message").isEqualTo("Type mismatch.");
     }
 
     @Test
-    public void getReviewNotFoundTest() {
+    void getReviewNotFoundTest() {
         getAndVerifyReviewsByProductId("?productId=213", OK)
                 .jsonPath("$.length()").isEqualTo(0);
     }
 
     @Test
-    public void getReviewsInvalidParameterNegativeValueTest() {
+    void getReviewsInvalidParameterNegativeValueTest() {
         int productIdInvalid = -1;
 
         getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)

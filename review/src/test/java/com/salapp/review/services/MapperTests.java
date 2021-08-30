@@ -2,7 +2,6 @@ package com.salapp.review.services;
 
 import com.salapp.api.core.review.Review;
 import com.salapp.review.model.ReviewEntity;
-import com.salapp.review.services.ReviewMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -11,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class MapperTests {
+class MapperTests {
     private final ReviewMapper mapper = Mappers.getMapper(ReviewMapper.class);
 
     @Test

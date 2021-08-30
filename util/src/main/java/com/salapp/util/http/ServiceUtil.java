@@ -15,7 +15,7 @@ public class ServiceUtil {
 
     private final String port;
 
-    private final String serviceAddress = null;
+    private String serviceAddress = null;
 
     @Autowired
     public ServiceUtil(@Value("${server.port}") String port) {
@@ -23,11 +23,12 @@ public class ServiceUtil {
     }
 
     public String getServiceAddress() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            return "unknown host name";
+        if (serviceAddress == null) {
+            serviceAddress = findMyHostName() + "/" + findMyIpAddress() + ":" + port;
+            LOG.debug(serviceAddress);
         }
+
+        return serviceAddress;
     }
 
     private String findMyIpAddress() {
@@ -35,6 +36,14 @@ public class ServiceUtil {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             return "unknown IP address";
+        }
+    }
+
+    private String findMyHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "unknown host name";
         }
     }
 }

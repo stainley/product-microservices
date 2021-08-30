@@ -10,11 +10,12 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-public class PersistenceTests {
+class PersistenceTests {
 
     @Autowired
     private RecommendationRepository repository;
@@ -36,9 +37,9 @@ public class PersistenceTests {
         RecommendationEntity newEntity = new RecommendationEntity(1, 3, "a", 3, "c");
         repository.save(newEntity);
 
-        RecommendationEntity foundEntity = repository.findById(newEntity.getId()).get();
-        assertEqualsRecommendation(newEntity, foundEntity);
+        Optional<RecommendationEntity> foundEntity = repository.findById(newEntity.getId());
 
+        foundEntity.ifPresent(entity -> assertEqualsRecommendation(newEntity, entity));
         Assertions.assertEquals(2, repository.count());
     }
 
@@ -47,9 +48,10 @@ public class PersistenceTests {
         savedEntity.setAuthor("a2");
         repository.save(savedEntity);
 
-        RecommendationEntity foundEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, foundEntity.getVersion());
-        Assertions.assertEquals("a2", foundEntity.getAuthor());
+        Optional<RecommendationEntity> foundEntity = repository.findById(savedEntity.getId());
+
+        foundEntity.ifPresent(entity -> Assertions.assertEquals(1, entity.getVersion()));
+        foundEntity.ifPresent(entity -> Assertions.assertEquals("a2", foundEntity.get().getAuthor()));
     }
 
     @Test
@@ -76,20 +78,31 @@ public class PersistenceTests {
 
     @Test
     void optimisticLockError() {
-        RecommendationEntity entity1 = repository.findById(savedEntity.getId()).get();
-        RecommendationEntity entity2 = repository.findById(savedEntity.getId()).get();
-
-        entity1.setAuthor("a1");
-        repository.save(entity1);
+        Optional<RecommendationEntity> entity1 = repository.findById(savedEntity.getId());
+        Optional<RecommendationEntity> entity2 = repository.findById(savedEntity.getId());
 
         try {
-            entity2.setAuthor("a2");
-            repository.save(entity2);
-        }catch (OptimisticLockingFailureException e) {}
+            entity1.ifPresent(entity -> {
+                entity.setAuthor("a1");
+                repository.save(entity1.get());
+            });
 
-        RecommendationEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, updatedEntity.getVersion());
-        Assertions.assertEquals("a1", updatedEntity.getAuthor());
+            entity2.ifPresent(entity -> {
+                entity2.get().setAuthor("a2");
+                repository.save(entity2.get());
+            });
+
+        } catch (OptimisticLockingFailureException e) {
+            Assertions.assertNotNull(e);
+        }
+
+        Optional<RecommendationEntity> updatedEntity = repository.findById(savedEntity.getId());
+
+        if (updatedEntity.isPresent()) {
+            Assertions.assertEquals(1, updatedEntity.get().getVersion());
+            Assertions.assertEquals("a1", updatedEntity.get().getAuthor());
+        }
+
     }
 
     private void assertEqualsRecommendation(RecommendationEntity expectedEntity, RecommendationEntity actualEntity) {

@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-public class MapperTests {
+class MapperTests {
 
     private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
 
     @Test
-    public void mapperTest() {
+    void mapperTest() {
 
         Assertions.assertNotNull(mapper);
 

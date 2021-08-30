@@ -2,7 +2,6 @@ package com.salapp.product.repositories;
 
 import com.salapp.product.model.ProductEntity;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

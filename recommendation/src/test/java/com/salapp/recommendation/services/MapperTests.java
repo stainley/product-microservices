@@ -9,9 +9,9 @@ import org.mapstruct.factory.Mappers;
 import java.util.Collections;
 import java.util.List;
 
-public class MapperTests {
+class MapperTests {
 
-    private RecommendationMapper mapper = Mappers.getMapper(RecommendationMapper.class);
+    private final RecommendationMapper mapper = Mappers.getMapper(RecommendationMapper.class);
 
     @Test
     void mapperTests() {

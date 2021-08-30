@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class PersistenceTests {
+class PersistenceTests {
 
     @Autowired
     private ReviewRepository repository;
@@ -42,10 +43,13 @@ public class PersistenceTests {
         ReviewEntity newEntity = new ReviewEntity(1, 3, "a", "s", "c");
         repository.save(newEntity);
 
-        ReviewEntity foundEntity = repository.findById(newEntity.getId()).get();
-        assertEqualsReview(newEntity, foundEntity);
+        Optional<ReviewEntity> foundEntity = repository.findById(newEntity.getId());
 
-        Assertions.assertEquals(2, repository.count());
+        if (foundEntity.isPresent()) {
+            assertEqualsReview(newEntity, foundEntity.get());
+            Assertions.assertEquals(2, repository.count());
+        }
+
     }
 
     @Test
@@ -53,9 +57,12 @@ public class PersistenceTests {
         savedEntity.setAuthor("a2");
         repository.save(savedEntity);
 
-        ReviewEntity foundEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, foundEntity.getVersion());
-        Assertions.assertEquals("a2", foundEntity.getAuthor());
+        Optional<ReviewEntity> foundEntity = repository.findById(savedEntity.getId());
+
+        if (foundEntity.isPresent()) {
+            Assertions.assertEquals(1, foundEntity.get().getVersion());
+            Assertions.assertEquals("a2", foundEntity.get().getAuthor());
+        }
     }
 
     @Test
@@ -82,22 +89,31 @@ public class PersistenceTests {
 
     @Test
     void optimisticLockError() {
-        ReviewEntity entity1 = repository.findById(savedEntity.getId()).get();
-        ReviewEntity entity2 = repository.findById(savedEntity.getId()).get();
 
-        entity1.setAuthor("a1");
-        repository.save(entity1);
 
         try {
-            entity2.setAuthor("a2");
-            repository.save(entity2);
-            Assertions.fail("Expected an OptimisticLockFailureException");
-        } catch (OptimisticLockingFailureException e) {
-        }
+            Optional<ReviewEntity> entity1 = repository.findById(savedEntity.getId());
+            Optional<ReviewEntity> entity2 = repository.findById(savedEntity.getId());
 
-        ReviewEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-        Assertions.assertEquals(1, updatedEntity.getVersion());
-        Assertions.assertEquals("a1", updatedEntity.getAuthor());
+            if (entity1.isPresent()) {
+                entity1.get().setAuthor("a1");
+                repository.save(entity1.get());
+            }
+
+
+            Optional<ReviewEntity> updatedEntity = repository.findById(savedEntity.getId());
+
+            if (entity2.isPresent() && updatedEntity.isPresent()) {
+                entity2.get().setAuthor("a2");
+                repository.save(entity2.get());
+
+                Assertions.assertEquals(1, updatedEntity.get().getVersion());
+                Assertions.assertEquals("a1", updatedEntity.get().getAuthor());
+            }
+
+        } catch (OptimisticLockingFailureException e) {
+            Assertions.assertNotNull(e);
+        }
     }
 
     private void assertEqualsReview(ReviewEntity expectedEntity, ReviewEntity actualEntity) {
