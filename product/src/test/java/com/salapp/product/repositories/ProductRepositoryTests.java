@@ -39,6 +39,16 @@ public class ProductRepositoryTests {
     }
 
     @Test
+    void testProductEquals() {
+        ProductEntity product1 = new ProductEntity(1, "n", 1);
+        ProductEntity product2 = new ProductEntity(1, "n", 1);
+
+        Assertions.assertEquals(product1, product2);
+        Assertions.assertEquals(product1.hashCode(), product2.hashCode());
+    }
+
+
+    @Test
     void create() {
         ProductEntity newEntity = new ProductEntity(2, "n", 2);
         repository.save(newEntity);
